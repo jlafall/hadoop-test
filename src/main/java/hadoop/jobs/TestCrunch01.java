@@ -6,9 +6,9 @@ import org.apache.crunch.Pipeline;
 import org.apache.crunch.PipelineResult;
 import org.apache.crunch.io.To;
 import org.apache.crunch.io.From;
+import org.apache.crunch.lib.Sort;
 import org.apache.crunch.types.PType;
 import org.apache.crunch.types.avro.Avros;
-// import org.apache.crunch.types.writable.Writables;
 import org.apache.crunch.impl.mr.MRPipeline;
 
 import org.apache.hadoop.fs.Path;
@@ -21,6 +21,7 @@ import hadoop.models.StockData;
 import hadoop.maps.StockDataByMonthAndYear;
 import hadoop.maps.RollupByMonthAndYear;
 import hadoop.operations.CsvToStockData;
+import hadoop.operations.StockDataToCsv;
 
 public class TestCrunch01 extends Configured implements Tool {
 	public int run(String[] args) throws Exception {
@@ -50,8 +51,15 @@ public class TestCrunch01 extends Configured implements Tool {
 		PTable<String, StockData> rollupByMonthAndYear = keyByMonthAndYear.groupByKey()
 			.mapValues(new RollupByMonthAndYear(), pStockDataType);
 
+		// sort table by key in descending order
+		PTable<String, StockData> sortedRollup = Sort.sort(rollupByMonthAndYear, Sort.Order.DESCENDING);
+
+		// change rollup StockData object back to CSV format
+		PCollection<String> csvFormat = sortedRollup.values()
+			.parallelDo(new StockDataToCsv(), Avros.strings());
+
 		// output results to text file
-		rollupByMonthAndYear.write(To.textFile(outputPath));
+		csvFormat.write(To.textFile(outputPath));
 
 		// get results
 		PipelineResult result = pipeline.done();

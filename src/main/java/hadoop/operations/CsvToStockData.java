@@ -18,9 +18,9 @@ public class CsvToStockData extends DoFn<String, StockData> {
 
 		// get columns from row
 		String[] columns = Iterables.toArray(spliter.split(line), String.class);
-
+		
 		// get column data and put into StockData object
-		data.date = new DateTime(columns[0].trim());
+		data.setDateFromJodaTime(new DateTime(columns[0].trim()));
 		data.open = Double.parseDouble(columns[1].trim());
 		data.close = Double.parseDouble(columns[4].trim());
 		data.adjClose = Double.parseDouble(columns[6].trim());
