@@ -1,14 +1,17 @@
 package hadoop.models;
+
+import java.math.BigDecimal;
 import org.joda.time.*;
 
 public class StockData {
 	public String date;
-	public double open;
-	public double close;
-	public double adjClose;
+	public BigDecimal open;
+	public BigDecimal close;
+	public BigDecimal adjClose;
+	public int totalCount;
 
 	public String getMonthAndYearKey() {
-		return new DateTime(date).toString("yyyyMM");
+		return new DateTime(date).toString("yyyy-MM");
 	}
 
 	public DateTime getDateAsJodaTime() {

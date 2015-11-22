@@ -11,8 +11,8 @@ public class StockDataToCsv extends DoFn<StockData, String> {
 	@Override
 	public void process(StockData data, Emitter<String> emitter) {
 		// emit CSV formatted string
-		String line = String.format("%s, %s, %s, %s", data.getDateAsJodaTime().toString("yyyy-MM"), 
-			data.open, data.close, data.adjClose);
+		String line = String.format("%s, %s, %s, %s, %s", data.getDateAsJodaTime().toString("yyyy-MM"), 
+			data.totalCount, data.open, data.close, data.adjClose);
 
 		emitter.emit(line);
 	}

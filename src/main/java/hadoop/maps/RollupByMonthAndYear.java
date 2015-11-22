@@ -2,24 +2,30 @@ package hadoop.maps;
 
 import org.apache.crunch.MapFn;
 import hadoop.models.StockData;
+import java.math.BigDecimal;
 import org.joda.time.*;
-import com.google.common.collect.Iterables;
 
 public class RollupByMonthAndYear extends MapFn<Iterable<StockData>, StockData> {
 	
 	@Override
 	public StockData map(Iterable<StockData> datas) {
-		StockData[] dataArray = Iterables.toArray(datas, StockData.class);
-		DateTime baseDate = dataArray[0].getDateAsJodaTime();
+		DateTime baseDate = null;
 
-		double totalOpen = 0.0;
-		double totalClose = 0.0;
-		double totalAdjClose = 0.0;
+		BigDecimal totalOpen = BigDecimal.ZERO;
+		BigDecimal totalClose = BigDecimal.ZERO;
+		BigDecimal totalAdjClose = BigDecimal.ZERO;
+		int totalCount = 0;
 
-		for (StockData d : dataArray) {
-			totalOpen += d.open;
-			totalClose += d.close;
-			totalAdjClose += d.adjClose;
+		for (StockData d : datas) {
+			if (baseDate == null) {
+				baseDate = d.getDateAsJodaTime();
+			}
+
+			totalOpen = totalOpen.add(d.open);
+			totalClose = totalClose.add(d.close);
+			totalAdjClose = totalAdjClose.add(d.adjClose);
+
+			++totalCount;
 		}
 
 		StockData data = new StockData();
@@ -27,6 +33,7 @@ public class RollupByMonthAndYear extends MapFn<Iterable<StockData>, StockData> 
 		data.open = totalOpen;
 		data.close = totalClose;
 		data.adjClose = totalAdjClose;
+		data.totalCount = totalCount;
 
 		return data;
 	}
