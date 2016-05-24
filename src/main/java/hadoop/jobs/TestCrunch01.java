@@ -19,7 +19,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 import hadoop.models.StockData;
 import hadoop.maps.StockDataByMonthAndYear;
-import hadoop.maps.RollupByMonthAndYear;
+import hadoop.combiners.RollupByMonthAndYear;
 import hadoop.operations.CsvToStockData;
 import hadoop.operations.StockDataToCsv;
 
@@ -49,7 +49,8 @@ public class TestCrunch01 extends Configured implements Tool {
 
 		// rollup data by month and year
 		PTable<String, StockData> rollupByMonthAndYear = keyByMonthAndYear.groupByKey()
-			.mapValues(new RollupByMonthAndYear(), pStockDataType);
+			// .mapValues(new RollupByMonthAndYear(), pStockDataType);
+			.combineValues(new RollupByMonthAndYear());
 
 		// sort table by key in descending order
 		PTable<String, StockData> sortedRollup = Sort.sort(rollupByMonthAndYear, Sort.Order.DESCENDING);

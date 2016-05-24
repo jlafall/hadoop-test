@@ -51,4 +51,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+configurations {
+    runtime.exclude module: 'hadoop-client'
+    runtime.exclude module: 'crunch-core'
+}
+
 sourceCompatibility = 1.7

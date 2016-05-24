@@ -1,14 +1,14 @@
-package hadoop.maps;
+package hadoop.combiners;
 
-import org.apache.crunch.MapFn;
+import hadoop.common.CombinerFn;
 import hadoop.models.StockData;
 import java.math.BigDecimal;
 import org.joda.time.*;
 
-public class RollupByMonthAndYear extends MapFn<Iterable<StockData>, StockData> {
+public class RollupByMonthAndYear extends CombinerFn<String, StockData> {
 	
 	@Override
-	public StockData map(Iterable<StockData> datas) {
+	public StockData combine(Iterable<StockData> datas) {
 		DateTime baseDate = null;
 
 		BigDecimal totalOpen = BigDecimal.ZERO;

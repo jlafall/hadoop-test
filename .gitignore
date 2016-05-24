@@ -1,6 +1,7 @@
 .gradle/
 .vagrant/
 build/
+test-data-result/
 .DS_Store
 *.csv
 
