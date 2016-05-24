@@ -1,0 +1,6 @@
+.gradle/
+.vagrant/
+build/
+.DS_Store
+*.csv
+
